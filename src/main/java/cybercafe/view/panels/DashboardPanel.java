@@ -30,6 +30,7 @@ public class DashboardPanel extends JPanel {
         lblTitle.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 0));
         headerPanel.add(lblTitle, BorderLayout.WEST);
 
+
         JButton btnManageMembers = new JButton("QUẢN LÝ HỘI VIÊN");
         btnManageMembers.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnManageMembers.setBackground(new Color(255, 215, 0));
