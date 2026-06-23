@@ -42,7 +42,7 @@ public class ClientApp extends JFrame {
     private JLabel lblLockUser;
 
     public ClientApp() {
-        setTitle("VIKINGS CYBER ARENA - CLIENT SYSTEM");
+        setTitle("CyberCafe - CLIENT SYSTEM");
         setSize(1024, 600);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);

@@ -24,7 +24,7 @@ public class DashboardPanel extends JPanel {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(15, 18, 25));
 
-        JLabel lblTitle = new JLabel("CYBER ARENA DASHBOARD");
+        JLabel lblTitle = new JLabel("CYBER CAFE DASHBOARD");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
         lblTitle.setForeground(new Color(0, 245, 255));
         lblTitle.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 0));
