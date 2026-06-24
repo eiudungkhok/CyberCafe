@@ -3,120 +3,109 @@ package cybercafe.view.panels;
 import cybercafe.dao.MachineDAO;
 import cybercafe.model.Machine;
 import cybercafe.view.components.MachineCard;
+import cybercafe.view.dialogs.KitchenManagerDialog;
 import cybercafe.view.dialogs.CustomerManagerDialog;
-import cybercafe.view.dialogs.MachineActionDialog;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
 
 public class DashboardPanel extends JPanel {
-    private MachineDAO machineDAO;
+    private MachineDAO machineDAO = new MachineDAO();
     private JPanel gridPanel;
-    private Timer autoSyncTimer;
+    private Timer refreshTimer;
+
+    private final Color BG_DARK = new Color(15, 23, 42);
+    private final Color PANEL_BG = new Color(30, 41, 59);
+    private final Color NEON_CYAN = new Color(34, 211, 238);
+    private final Color TEXT_PRIMARY = new Color(241, 245, 249);
 
     public DashboardPanel() {
-        machineDAO = new MachineDAO();
         setLayout(new BorderLayout());
-        setBackground(new Color(15, 18, 25));
+        setBackground(BG_DARK);
 
-        // ====== 1. HEADER ======
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(new Color(15, 18, 25));
+        // Tạo 2 Tab Chính: Sơ đồ máy & Khung Chat
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setBackground(PANEL_BG);
+        tabbedPane.setForeground(TEXT_PRIMARY);
+        tabbedPane.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        tabbedPane.setBorder(null);
 
-        JLabel lblTitle = new JLabel("CYBER CAFE DASHBOARD");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitle.setForeground(new Color(0, 245, 255));
-        lblTitle.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 0));
-        headerPanel.add(lblTitle, BorderLayout.WEST);
+        // =====================================
+        // TAB 1: SƠ ĐỒ MÁY TRẠM
+        // =====================================
+        JPanel machineTab = new JPanel(new BorderLayout());
+        machineTab.setBackground(BG_DARK);
 
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setOpaque(false);
+        topBar.setBorder(new EmptyBorder(15, 20, 15, 20));
 
-        JButton btnManageMembers = new JButton("QUẢN LÝ HỘI VIÊN");
-        btnManageMembers.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnManageMembers.setBackground(new Color(255, 215, 0));
-        btnManageMembers.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnManageMembers.addActionListener(e -> {
-            Frame topFrame = (Frame) SwingUtilities.getWindowAncestor(this);
-            new CustomerManagerDialog(topFrame).setVisible(true);
-        });
+        JLabel lblTitle = new JLabel("CYBERCAFE - TRUNG TÂM ĐIỀU KHIỂN");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        lblTitle.setForeground(NEON_CYAN);
 
-        // ===== THÊM NÚT QUẢN LÝ BẾP =====
-        JButton btnKitchen = new JButton("🍔 BẾP & DỊCH VỤ (0)");
+        JPanel toolBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        toolBar.setOpaque(false);
+
+        JButton btnKitchen = new JButton("[ ♨ ] BẾP & DỊCH VỤ");
+        btnKitchen.setBackground(new Color(245, 158, 11)); // Cam dịu
+        btnKitchen.setForeground(BG_DARK);
         btnKitchen.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnKitchen.setBackground(new Color(255, 165, 0));
+        btnKitchen.setFocusPainted(false);
         btnKitchen.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnKitchen.addActionListener(e -> {
-            Frame topFrame = (Frame) SwingUtilities.getWindowAncestor(this);
-            new cybercafe.view.dialogs.KitchenManagerDialog(topFrame).setVisible(true);
-        });
+        btnKitchen.addActionListener(e -> new KitchenManagerDialog((Frame) SwingUtilities.getWindowAncestor(this)).setVisible(true));
 
-        // Chỉ tạo btnPanel MỘT LẦN duy nhất
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
-        btnPanel.setOpaque(false);
-        btnPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 30));
-        btnPanel.add(btnKitchen);
-        btnPanel.add(btnManageMembers);
-        headerPanel.add(btnPanel, BorderLayout.EAST);
+        JButton btnCustomer = new JButton("[ ❖ ] QUẢN LÝ HỘI VIÊN");
+        btnCustomer.setBackground(NEON_CYAN);
+        btnCustomer.setForeground(BG_DARK);
+        btnCustomer.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnCustomer.setFocusPainted(false);
+        btnCustomer.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCustomer.addActionListener(e -> new CustomerManagerDialog((Frame) SwingUtilities.getWindowAncestor(this)).setVisible(true));
 
-        add(headerPanel, BorderLayout.NORTH);
+        toolBar.add(btnKitchen);
+        toolBar.add(btnCustomer);
 
-        // ====== 2. LƯỚI HIỂN THỊ MÁY TRẠM ======
-        gridPanel = new JPanel(new GridLayout(0, 5, 20, 20));
-        gridPanel.setBackground(new Color(15, 18, 25));
-        gridPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        topBar.add(lblTitle, BorderLayout.WEST);
+        topBar.add(toolBar, BorderLayout.EAST);
 
-        loadMachinesFromDB();
+        gridPanel = new JPanel(new GridLayout(0, 5, 15, 15));
+        gridPanel.setBackground(BG_DARK);
+        gridPanel.setBorder(new EmptyBorder(10, 20, 20, 20));
 
-        JScrollPane scrollPane = new JScrollPane(gridPanel);
-        scrollPane.setBorder(null);
-        scrollPane.getViewport().setBackground(new Color(15, 18, 25));
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        loadMachines();
 
-        add(scrollPane, BorderLayout.CENTER);
+        machineTab.add(topBar, BorderLayout.NORTH);
+        machineTab.add(new JScrollPane(gridPanel), BorderLayout.CENTER);
 
-        // ====== 3. TRÁI TIM ĐỒNG BỘ REAL-TIME ======
-        autoSyncTimer = new Timer(2000, e -> {
-            loadMachinesFromDB();
+        // =====================================
+        // TAB 2: TỔNG ĐÀI TIN NHẮN (CHAT VỚI KHÁCH)
+        // =====================================
 
-            // Cập nhật số lượng đơn chờ trên nút Bếp liên tục mỗi 2s
-            cybercafe.dao.OrderDAO orderDAO = new cybercafe.dao.OrderDAO();
-            int pending = orderDAO.countPendingOrders();
-            if (pending > 0) {
-                btnKitchen.setText("🔔 BẾP CÓ ĐƠN (" + pending + ")");
-                btnKitchen.setBackground(new Color(255, 50, 50));
-                btnKitchen.setForeground(Color.WHITE);
-            } else {
-                btnKitchen.setText("🍔 BẾP & DỊCH VỤ");
-                btnKitchen.setBackground(new Color(255, 165, 0));
-                btnKitchen.setForeground(Color.BLACK);
-            }
-        });
-        autoSyncTimer.start();
+        AdminChatPanel chatPanel = new AdminChatPanel();
+        AdminStatsPanel statsPanel = new AdminStatsPanel(); // Khởi tạo Tab Thống Kê
+
+        tabbedPane.addTab("[ ☷ ] SƠ ĐỒ PHÒNG MÁY ", machineTab);
+        tabbedPane.addTab("[ 💬 ] TỔNG ĐÀI HỖ TRỢ ", chatPanel);
+        tabbedPane.addTab("[ 📊 ] BÁO CÁO & NHẬT KÝ ", statsPanel); // Thêm Tab thứ 3 này
+
+
+
+        add(tabbedPane, BorderLayout.CENTER);
+
+        // Auto refresh trạng thái máy
+        refreshTimer = new Timer(3000, e -> loadMachines());
+        refreshTimer.start();
     }
 
-    private void loadMachinesFromDB() {
+    private void loadMachines() {
         gridPanel.removeAll();
         List<Machine> machines = machineDAO.getAllMachines();
-
-        Frame topFrame = (Frame) SwingUtilities.getWindowAncestor(this);
-
         for (Machine machine : machines) {
-            MachineCard card = new MachineCard(machine);
-
-            card.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    MachineActionDialog dialog = new MachineActionDialog(topFrame, machine);
-                    dialog.setVisible(true);
-                    if (dialog.isActionSuccess()) {
-                        loadMachinesFromDB();
-                    }
-                }
-            });
-
-            gridPanel.add(card);
+            gridPanel.add(new MachineCard(machine, this::loadMachines));
         }
-
         gridPanel.revalidate();
         gridPanel.repaint();
     }
