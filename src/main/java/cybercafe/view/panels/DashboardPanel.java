@@ -42,7 +42,7 @@ public class DashboardPanel extends JPanel {
         topBar.setOpaque(false);
         topBar.setBorder(new EmptyBorder(15, 20, 15, 20));
 
-        JLabel lblTitle = new JLabel("NEON ESPORTS - TRUNG TÂM ĐIỀU KHIỂN");
+        JLabel lblTitle = new JLabel("CYBERCAFE - TRUNG TÂM ĐIỀU KHIỂN");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
         lblTitle.setForeground(NEON_CYAN);
 
