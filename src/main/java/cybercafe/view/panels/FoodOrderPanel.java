@@ -23,10 +23,13 @@ public class FoodOrderPanel extends JPanel {
     private JLabel lblTotalCartPrice;
 
     // Bảng màu Cyberpunk đồng bộ với hệ thống
-    private final Color BG_DARK = new Color(10, 14, 23);
-    private final Color PANEL_BG = new Color(20, 25, 40);
-    private final Color NEON_CYAN = new Color(0, 245, 255);
-    private final Color NEON_ORANGE = new Color(255, 165, 0);
+    // Thay thế đoạn khai báo màu cũ bằng cụm này:
+    private final Color BG_DARK = new Color(15, 23, 42);
+    private final Color PANEL_BG = new Color(30, 41, 59);
+    private final Color NEON_CYAN = new Color(34, 211, 238);
+    private final Color NEON_PINK = new Color(236, 72, 153);
+    private final Color TEXT_PRIMARY = new Color(241, 245, 249);
+    private final Color TEXT_MUTED = new Color(148, 163, 184);
 
     public FoodOrderPanel(int machineId) {
         this.machineId = machineId;
@@ -113,7 +116,7 @@ public class FoodOrderPanel extends JPanel {
         lblTotalCartPrice.setBorder(new EmptyBorder(0, 0, 10, 0));
 
         JButton btnSubmitOrder = new JButton("GỬI ĐƠN XUỐNG BẾP");
-        btnSubmitOrder.setBackground(NEON_ORANGE);
+        btnSubmitOrder.setBackground(NEON_CYAN);
         btnSubmitOrder.setForeground(Color.WHITE);
         btnSubmitOrder.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnSubmitOrder.setPreferredSize(new Dimension(0, 45));

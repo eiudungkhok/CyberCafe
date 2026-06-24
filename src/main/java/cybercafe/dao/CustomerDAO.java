@@ -48,27 +48,21 @@ public class CustomerDAO {
         return -1;
     }
     // 1. Tạo tài khoản mới (Mặc định thẻ Bronze - ID = 1, Số dư = 0)
-    public boolean createCustomer(String username, String plainPassword) {
-        String sql = "INSERT INTO customers (username, password_hash, balance, membership_id) VALUES (?, ?, 0, 1)";
-        try (Connection conn = DatabasePool.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            // Băm mật khẩu trước khi lưu
+// Tạo tài khoản mới có kèm CCCD/SĐT
+    public boolean createCustomer(String username, String password, String cccdPhone) {
+        // Cột cccd_phone vừa được chúng ta tạo ở bảng customers trong CSDL
+        String sql = "INSERT INTO customers (username, password, balance, tier_id, cccd_phone) VALUES (?, ?, 0, 1, ?)";
+        try (java.sql.Connection conn = cybercafe.util.DatabasePool.getConnection();
+             java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
-            stmt.setString(2, SecurityUtils.hashPassword(plainPassword));
-
+            stmt.setString(2, password);
+            stmt.setString(3, cccdPhone); // Truyền giá trị CCCD vào CSDL
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            // Lỗi 1062 là lỗi trùng lặp Username (Do cột username để là UNIQUE)
-            if (e.getErrorCode() == 1062) {
-                System.err.println("❌ Tên tài khoản đã tồn tại!");
-            } else {
-                System.err.println("❌ Lỗi tạo tài khoản: " + e.getMessage());
-            }
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
-
     // 2. Lấy danh sách toàn bộ Username để hiển thị lên ComboBox
     public java.util.List<String> getAllUsernames() {
         java.util.List<String> users = new java.util.ArrayList<>();

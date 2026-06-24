@@ -9,11 +9,13 @@ import java.awt.*;
 import java.text.DecimalFormat;
 
 public class AchievementPanel extends JPanel {
-    private final Color BG_DARK = new Color(10, 14, 23);
-    private final Color PANEL_BG = new Color(20, 25, 40);
-    private final Color NEON_CYAN = new Color(0, 245, 255);
-    private final Color NEON_PURPLE = new Color(139, 92, 246);
-    private final Color GOLDEN = new Color(255, 215, 0);
+    // Thay thế đoạn khai báo màu cũ bằng cụm này:
+    private final Color BG_DARK = new Color(15, 23, 42);
+    private final Color PANEL_BG = new Color(30, 41, 59);
+    private final Color NEON_CYAN = new Color(34, 211, 238);
+    private final Color NEON_PINK = new Color(236, 72, 153);
+    private final Color TEXT_PRIMARY = new Color(241, 245, 249);
+    private final Color TEXT_MUTED = new Color(148, 163, 184);
 
     public AchievementPanel(int customerId) {
         setLayout(new BorderLayout(20, 20));
@@ -40,7 +42,7 @@ public class AchievementPanel extends JPanel {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(PANEL_BG); g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
-                g2.setColor(GOLDEN); g2.setStroke(new BasicStroke(2f));
+                g2.setColor(Color.WHITE); g2.setStroke(new BasicStroke(2f));
                 g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 15, 15);
             }
         };
@@ -59,8 +61,8 @@ public class AchievementPanel extends JPanel {
         statsGrid.setOpaque(false);
 
         statsGrid.add(createStatCard("TỔNG GIỜ CÀY RANK", totalHours + "h " + remainingMinutes + "p", NEON_CYAN));
-        statsGrid.add(createStatCard("TỔNG TIỀN ĐÃ NẠP", df.format(profile.getTotalSpent()) + " đ", GOLDEN));
-        statsGrid.add(createStatCard("ĐƠN DỊCH VỤ ĐÃ ĐẶT", profile.getTotalOrders() + " Món", NEON_PURPLE));
+        statsGrid.add(createStatCard("TỔNG TIỀN ĐÃ NẠP", df.format(profile.getTotalSpent()) + " đ", Color.YELLOW));
+        statsGrid.add(createStatCard("ĐƠN DỊCH VỤ ĐÃ ĐẶT", profile.getTotalOrders() + " Món", NEON_PINK));
 
 // 3. THANH TIẾN TRÌNH LÊN CẤP ĐỘNG
         int targetToNextRank = 1000000; // 1 Triệu = 1 Cấp
@@ -85,13 +87,13 @@ public class AchievementPanel extends JPanel {
             progressBar.setValue(100);
             progressBar.setString("100% (ĐÃ ĐẠT CẤP BẬC TỐI ĐA - CẢM ƠN ĐẠI CAO THỦ!)");
 
-            progressBar.setForeground(GOLDEN); // Đổi thanh thành màu Vàng Gold cho ngầu
+            progressBar.setForeground(Color.BLUE); // Đổi thanh thành màu Vàng Gold cho ngầu
             lblProgressTitle.setText("TIẾN TRÌNH LÊN CẤP BẬC KẾ TIẾP (MAX RANK REACHED)");
         } else {
             // Các hạng khác chạy bình thường
             progressBar.setValue(percentage);
             progressBar.setString(percentage + "% (Còn thiếu " + df.format(missingPoints) + " đ để nâng cấp Hạng Thẻ mới)");
-            progressBar.setForeground(NEON_PURPLE);
+            progressBar.setForeground(NEON_CYAN);
         }
         // ==================================================
 
